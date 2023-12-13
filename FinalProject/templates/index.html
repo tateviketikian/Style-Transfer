@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload a content and style image, get a stunning styled result instantly.</title>
+    <style>
+        body {
+            padding: 10px;
+            background-color: #2d2b33;
+            color: white;
+        }
+
+        #preview-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: top;
+            flex-wrap: wrap;
+            padding: 10px;
+        }
+
+        .preview {
+            flex-basis: 48%;
+        }
+
+        .choose-image-btn {
+            border: #ebebeb solid 3px;
+            padding: 10px;
+            background-color: #fff;
+            color: #2d2b33;
+            cursor: pointer;
+            border-radius: 20px;
+            font-size: 16px;
+/* <!--            display: inline-block;-->
+<!--            position:relative;--> */
+            width: 130px;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            text-align: center;
+        }
+        .choose-image-btn img {
+            width: 25px;
+            height: 25px;
+            alignment: center;
+            margin-left: 10px;
+        }
+
+        #preview-image {
+            max-width: 100%;
+            max-height: 300px;
+            margin-top: 10px;
+            background-color: #000;
+        }
+
+        h1 {
+            padding: 10px;
+        }
+
+        input[type="submit"] {
+            border: #ebebeb solid 3px;
+            padding: 10px;
+            background-color: #fff;
+            color: #2d2b33;
+            cursor: pointer;
+            border-radius: 20px;
+            font-size: 16px;
+            display: inline-block;
+            position: relative;
+            width: 120px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto;
+            margin-top: 30px;
+        }
+
+        input[type="submit"]:disabled {
+           background-color: #888;
+        }
+
+        #progress-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        #progress-bar {
+            width: 100%;
+        }
+
+        #progress-text {
+            font-weight: bold;
+        }
+
+    </style>
+</head>
+<body>
+    <h1>Upload a content and style image, get a stunning styled result instantly.</h1>
+    <form action="/upload" id='myform' method="post" enctype="multipart/form-data">
+        <div id="preview-container">
+            <div class="preview">
+                <label for="file1" class="choose-image-btn" style="background-image: url('image.png');">
+                    Content Image
+                        <img src="https://cdn.onlinewebfonts.com/svg/img_134042.png" />
+                </label>
+                <input type="file" name="file1" accept="image/*" id="file1" style="display: none;" onchange="previewImage('file1', 'preview1')" required>
+                <div id="preview1"></div>
+            </div>
+
+            <div class="preview">
+                <label for="file2" class="choose-image-btn" style="background-image: url('image.png');">
+                    Style Image
+                        <img src="https://cdn.onlinewebfonts.com/svg/img_134042.png" />
+                </label>
+                <input type="file" name="file2" accept="image/*" id="file2" style="display: none;" onchange="previewImage('file2', 'preview2')" required>
+                <div id="preview2"></div>
+            </div>
+        </div>
+
+        <input onclick="update()" type="submit" value="Process" id="processButton" disabled>
+    </form>
+    <div id="progress-container">
+        <progress id="progress-bar" value="0" max="100"></progress>
+        <span id="progress-text"></span>
+    </div>
+
+    <script>
+        function previewImage(inputName, previewId) {
+            var input = document.querySelector('input[name=' + inputName + ']');
+            var preview = document.getElementById(previewId);
+            var file = input.files[0];
+            var reader = new FileReader();
+
+            reader.onloadend = function () {
+                preview.innerHTML = '<img id="preview-image" src="' + reader.result + '" alt="Image Preview">';
+                checkImagesSelected();
+            }
+
+            if (file) {
+                reader.readAsDataURL(file);
+            } else {
+                preview.innerHTML = '';
+                checkImagesSelected();
+            }
+        }
+
+        function checkImagesSelected() {
+            var file1 = document.querySelector('input[name="file1"]').files[0];
+            var file2 = document.querySelector('input[name="file2"]').files[0];
+            var processButton = document.getElementById('processButton');
+
+            if (file1 && file2) {
+                processButton.removeAttribute('disabled');
+            } else {
+                processButton.setAttribute('disabled', 'true');
+            }
+        } 
+
+        function update(){
+            document.getElementById('progress-container').style.display = 'block';
+
+            var progressBar = document.getElementById('progress-bar');
+            var progressText = document.getElementById('progress-text');
+
+            var progress = 0;
+            var interval = setInterval(function() {
+                progress += 1;
+                progressBar.value = progress;
+                progressText.innerText = progress + '%';
+                if (progress >= 100) {
+                    clearInterval(interval); // Stop the progress simulation
+                    document.getElementById('progress-container').style.display = 'none'; // Hide the progress bar container
+                    alert('Style transfer is successfully completed!Press Ok to see the magic)');
+                }
+            }, 15);
+        }
+    </script>
+</body>
+</html>
+
